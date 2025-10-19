@@ -1,0 +1,73 @@
+{% extends "service.html" %}
+
+{% block service_content %}
+<h2>SystemManager – Benutzerverwaltung</h2>
+<p>Hier kannst du alle Benutzer ansehen und direkt bearbeiten oder löschen:</p>
+
+<table class="table table-striped table-hover mt-3">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Username</th>
+      <th>Permissions</th>
+      <th>Erster Login?</th>
+      <th>Aktionen</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <form method="POST" action="{{ url_for('update_user_inline', user_id=user.id) }}">
+        <td>{{ user.id }}</td>
+        <td>
+          <input type="text" class="form-control" name="username" value="{{ user.username }}">
+        </td>
+        <td>
+          <select name="groups" class="form-select" multiple>
+            {% for group in all_groups %}
+              <option value="{{ group.name }}" {% if group in user.permission_groups %}selected{% endif %}>
+                {{ group.name }}
+              </option>
+            {% endfor %}
+          </select>
+          <small class="text-muted">Ctrl/Cmd klicken, um mehrere auszuwählen</small>
+        </td>
+        <td>{{ "Ja" if user.first_login else "Nein" }}</td>
+        <td>
+          <button type="submit" class="btn btn-sm btn-warning">Speichern</button>
+          <button type="submit"
+                  formaction="{{ url_for('delete_user_inline', user_id=user.id) }}"
+                  class="btn btn-sm btn-danger"
+                  onclick="return confirm('Willst du den Benutzer wirklich löschen?');">
+            Löschen
+          </button>
+        </td>
+      </form>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<hr>
+
+<h5>Neuen Benutzer hinzufügen</h5>
+<form method="POST" action="{{ url_for('add_user_inline') }}" class="row g-2">
+  <div class="col-md-3">
+    <input type="text" name="username" class="form-control" placeholder="Username" required>
+  </div>
+  <div class="col-md-3">
+    <input type="password" name="password" class="form-control" placeholder="Passwort" required>
+  </div>
+  <div class="col-md-4">
+    <select name="groups" class="form-select" multiple>
+      {% for group in all_groups %}
+        <option value="{{ group.name }}">{{ group.name }}</option>
+      {% endfor %}
+    </select>
+    <small class="text-muted">Ctrl/Cmd klicken, um mehrere auszuwählen</small>
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-success w-100">Hinzufügen</button>
+  </div>
+</form>
+{% endblock %}

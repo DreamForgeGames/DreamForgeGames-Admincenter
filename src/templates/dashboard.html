@@ -1,0 +1,8 @@
+<!-- templates/dashboard.html -->
+{% extends 'panel_base.html' %}
+
+{% block panel_content %}
+  <h1 class="mb-4">Dashboard</h1>
+  <p>Willkommen, {{ current_user.username }}.</p>
+  <p>Der Home-Service wurde nicht gefunden; bitte erstelle einen Service mit dem Namen <strong>Home</strong>.</p>
+{% endblock %}

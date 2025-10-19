@@ -1,0 +1,49 @@
+{% extends "service.html" %}
+
+{% block service_content %}
+<h2>Permission Control – Berechtigungen verwalten</h2>
+<p>Hier kannst du alle PermissionGroups ansehen, bearbeiten oder löschen:</p>
+
+<table class="table table-striped table-hover mt-3">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Aktionen</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for group in all_groups %}
+    <tr>
+      <form method="POST" action="{{ url_for('update_group_inline', group_id=group.id) }}">
+        <td>{{ group.id }}</td>
+        <td>
+          <input type="text" class="form-control" name="name" value="{{ group.name }}">
+        </td>
+        <td>
+          <button type="submit" class="btn btn-sm btn-warning">Speichern</button>
+          <button type="submit"
+                  formaction="{{ url_for('delete_group_inline', group_id=group.id) }}"
+                  class="btn btn-sm btn-danger"
+                  onclick="return confirm('Willst du diese Permission wirklich löschen?');">
+            Löschen
+          </button>
+        </td>
+      </form>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<hr>
+
+<h5>Neue Permission hinzufügen</h5>
+<form method="POST" action="{{ url_for('add_group_inline') }}" class="row g-2">
+  <div class="col-md-6">
+    <input type="text" name="name" class="form-control" placeholder="Gruppenname" required>
+  </div>
+  <div class="col-md-6">
+    <button type="submit" class="btn btn-success">Hinzufügen</button>
+  </div>
+</form>
+{% endblock %}

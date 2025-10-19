@@ -1,0 +1,49 @@
+<!-- templates/_sidebar.html -->
+<nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar vh-100 p-3 border-end">
+  <h5 class="text-secondary mb-4">Navigation</h5>
+  <ul class="nav flex-column">
+    <!-- Home (link to dashboard which redirects to Home service) -->
+    <li class="nav-item mb-2">
+      <a class="nav-link text-dark fw-semibold
+         {% if active_page == 'dashboard' %}
+           active
+         {% elif home_service_id and active_page == ('service_' ~ home_service_id) %}
+           active
+         {% endif %}"
+         href="{{ url_for('dashboard') }}">
+        🏠 Home
+      </a>
+    </li>
+
+    <!-- Services (ohne das Home-Service, damit Home nicht doppelt auftaucht) -->
+    {% if services %}
+      <li class="nav-item mt-3">
+        <h6 class="text-secondary mb-2">Dienste</h6>
+        <ul class="nav flex-column ms-2">
+          {% for s in services %}
+            {% if home_service_id and s.id == home_service_id %}
+              {# Skip Home here to avoid duplicate display #}
+            {% else %}
+              <li class="nav-item mb-1">
+                <a class="nav-link text-dark {% if active_page == ('service_' ~ s.id) %}active{% endif %}"
+                   href="{{ url_for('service_page', service_id=s.id) }}">
+                  🔧 {{ s.name }}
+                </a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </li>
+    {% else %}
+      <li class="nav-item mt-3 text-muted small">
+        Keine Dienste verfügbar.
+      </li>
+    {% endif %}
+  </ul>
+
+  <hr>
+  <div class="mt-auto">
+    <p class="text-muted small mb-0">Eingeloggt als:</p>
+    <p class="fw-semibold">{{ current_user.username }}</p>
+  </div>
+</nav>

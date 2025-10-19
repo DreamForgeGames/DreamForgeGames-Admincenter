@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      {% include '_sidebar.html' %}
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+        <h1 class="mb-4">{{ service.name }}</h1>
+        <p>
+          Berechtigte Permissions:{% if service.required_permission %}
+            {{ service.required_permission }}
+          {% else %}
+            Alle
+          {% endif %}
+        </p>
+        <p>{{ service.description }}</p>
+        <hr />
+        {% block service_content %}
+        {% endblock %}
+      </main>
+    </div>
+  </div>
+{% endblock %}
