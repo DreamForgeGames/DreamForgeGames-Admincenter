@@ -20,10 +20,8 @@ load_dotenv()  # Lädt .env-Datei
 app = Flask(__name__)
 
 # --- CONFIG ---
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "fallback_dev_key")
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
-    "DATABASE_URL", "sqlite:///dreamforge.db"
-)
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["WTF_CSRF_ENABLED"] = False  # Für Entwicklung: Tokens deaktiviert
 
