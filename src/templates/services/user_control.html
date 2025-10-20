@@ -20,10 +20,14 @@
       <form method="POST" action="{{ url_for('update_user_inline', user_id=user.id) }}">
         <td>{{ user.id }}</td>
         <td>
-          <input type="text" class="form-control" name="username" value="{{ user.username }}">
+          {% if user.username != "superadmin" %}
+            <input type="text" class="form-control" name="username" value="{{ user.username }}">
+          {% else %}
+            <span class="text-muted">{{ user.username }}</span>
+          {% endif %}
         </td>
         <td>
-          <select name="groups" class="form-select" multiple>
+          <select name="groups" class="form-select" multiple {% if user.username == "superadmin" %}disabled{% endif %}>
             {% for group in all_groups %}
               <option value="{{ group.name }}" {% if group in user.permission_groups %}selected{% endif %}>
                 {{ group.name }}
@@ -34,13 +38,17 @@
         </td>
         <td>{{ "Ja" if user.first_login else "Nein" }}</td>
         <td>
-          <button type="submit" class="btn btn-sm btn-warning">Speichern</button>
-          <button type="submit"
-                  formaction="{{ url_for('delete_user_inline', user_id=user.id) }}"
-                  class="btn btn-sm btn-danger"
-                  onclick="return confirm('Willst du den Benutzer wirklich löschen?');">
-            Löschen
-          </button>
+          {% if user.username != "superadmin" %}
+            <button type="submit" class="btn btn-sm btn-warning">Speichern</button>
+            <button type="submit"
+                    formaction="{{ url_for('delete_user_inline', user_id=user.id) }}"
+                    class="btn btn-sm btn-danger"
+                    onclick="return confirm('Willst du den Benutzer wirklich löschen?');">
+              Löschen
+            </button>
+          {% else %}
+            <span class="text-muted">Unlöschbar</span>
+          {% endif %}
         </td>
       </form>
     </tr>

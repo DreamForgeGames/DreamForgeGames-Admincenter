@@ -1,0 +1,115 @@
+{% extends "service.html" %}
+
+{% block service_content %}
+<h2>Service Control – Dienste verwalten</h2>
+<p>Hier kannst du alle Services ansehen, anlegen, bearbeiten oder löschen.</p>
+
+<table class="table table-striped table-hover mt-3">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required Permission</th>
+      <th>Template File</th>
+      <th>Aktionen</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in all_services %}
+    <tr>
+      <form method="POST" action="{{ url_for('update_service_inline', service_id=s.id) }}">
+        <td>{{ s.id }}</td>
+        
+        <!-- Name: Nur editierbar, wenn kein kritischer Service -->
+        <td>
+          {% if s.name in ("Home", "User Control", "Permission Control", "Service Control") %}
+            <input type="text" class="form-control" value="{{ s.name }}" disabled>
+          {% else %}
+            <input type="text" class="form-control" name="name" value="{{ s.name }}" required>
+          {% endif %}
+        </td>
+        
+        <!-- Description -->
+        <td>
+          {% if s.name in ("Home", "User Control", "Permission Control", "Service Control") %}
+            <input type="text" class="form-control" value="{{ s.description or '' }}" disabled>
+          {% else %}
+            <input type="text" class="form-control" name="description" value="{{ s.description or '' }}">
+          {% endif %}
+        </td>
+        
+        <!-- Required Permission -->
+        <td>
+          {% if s.name in ("Home", "User Control", "Permission Control", "Service Control") %}
+            <input type="text" class="form-control" value="{{ s.required_permission or '(keine)' }}" disabled>
+          {% else %}
+            <select name="required_permission" class="form-select">
+              <option value="">(keine)</option>
+              {% for g in all_groups %}
+                <option value="{{ g.name }}" {% if s.required_permission == g.name %}selected{% endif %}>{{ g.name }}</option>
+              {% endfor %}
+            </select>
+          {% endif %}
+        </td>
+        
+        <!-- Template File -->
+        <td>
+          {% if s.name in ("Home", "User Control", "Permission Control", "Service Control") %}
+            <input type="text" class="form-control" value="{{ s.template_file or '' }}" disabled>
+          {% else %}
+            <input type="text" class="form-control" name="template_file" value="{{ s.template_file or '' }}">
+          {% endif %}
+          <small class="text-muted">z.B. service_example.html oder leer für generisches Template</small>
+        </td>
+        
+        <!-- Aktionen -->
+        <td>
+          {% if s.name in ("Home", "User Control", "Permission Control", "Service Control") %}
+            <span class="text-muted">Unlöschbar</span>
+          {% else %}
+            <button type="submit" class="btn btn-sm btn-warning">Speichern</button>
+            <button formaction="{{ url_for('delete_service_inline', service_id=s.id) }}" 
+                    class="btn btn-sm btn-danger"
+                    onclick="return confirm('Willst du den Service wirklich löschen?');">
+              Löschen
+            </button>
+          {% endif %}
+          {% if s.name not in ("Home", "User Control", "Permission Control", "Service Control") %}
+  <a href="{{ url_for('service_editor', service_id=s.id) }}" class="btn btn-sm btn-info">Edit HTML</a>
+{% endif %}
+
+        </td>
+      </form>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<hr>
+
+<h5>Neuen Service hinzufügen</h5>
+<form method="POST" action="{{ url_for('add_service_inline') }}" class="row g-2">
+  <div class="col-md-3">
+    <input type="text" name="name" class="form-control" placeholder="Service-Name" required>
+  </div>
+  <div class="col-md-4">
+    <input type="text" name="description" class="form-control" placeholder="Kurzbeschreibung">
+  </div>
+  <div class="col-md-3">
+    <select name="required_permission" class="form-select">
+      <option value="">(keine)</option>
+      {% for g in all_groups %}
+        <option value="{{ g.name }}">{{ g.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <input type="text" name="template_file" class="form-control" placeholder="template.html">
+  </div>
+  <div class="col-12 mt-2">
+    <button type="submit" class="btn btn-success">Service anlegen</button>
+  </div>
+</form>
+
+{% endblock %}

@@ -18,16 +18,24 @@
       <form method="POST" action="{{ url_for('update_group_inline', group_id=group.id) }}">
         <td>{{ group.id }}</td>
         <td>
-          <input type="text" class="form-control" name="name" value="{{ group.name }}">
+          {% if group.name != "superadmin" %}
+            <input type="text" class="form-control" name="name" value="{{ group.name }}">
+          {% else %}
+            <input type="text" class="form-control" name="name" value="{{ group.name }}" readonly>
+          {% endif %}
         </td>
         <td>
-          <button type="submit" class="btn btn-sm btn-warning">Speichern</button>
-          <button type="submit"
-                  formaction="{{ url_for('delete_group_inline', group_id=group.id) }}"
-                  class="btn btn-sm btn-danger"
-                  onclick="return confirm('Willst du diese Permission wirklich löschen?');">
-            Löschen
-          </button>
+          {% if group.name != "superadmin" %}
+            <button type="submit" class="btn btn-sm btn-warning">Speichern</button>
+            <button type="submit"
+                    formaction="{{ url_for('delete_group_inline', group_id=group.id) }}"
+                    class="btn btn-sm btn-danger"
+                    onclick="return confirm('Willst du diese Permission wirklich löschen?');">
+              Löschen
+            </button>
+          {% else %}
+            <span class="text-muted">Unlöschbar</span>
+          {% endif %}
         </td>
       </form>
     </tr>
