@@ -475,4 +475,4 @@ if __name__ == "__main__":
                                required_permission=perm, template_file=tmpl))
         db.session.commit()
 
-    app.run(debug=True)
+    app.run(debug=False)
