@@ -1,2 +1,2 @@
-src/instance/
-src/.env
+instance/
+.env
